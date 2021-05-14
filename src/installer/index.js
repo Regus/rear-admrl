@@ -79,18 +79,12 @@ class Installer {
         return;
       }
       process.chdir('/home/pi/');
-      code = await this.executeCmd('rm /home/pi/rear-admrl/fleet-admrl-dist/*');
+      code = await this.executeCmd('rm /home/pi/rear-admrl-data/fleet-admrl/*');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
         return;
       }
-      code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/rear-admrl/fleet-admrl-dist/');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        return;
-      }
-
-      code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/rear-admrl/fleet-admrl-dist/');
+      code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/rear-admrl-data/fleet-admrl/');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
         return;

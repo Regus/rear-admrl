@@ -9,6 +9,9 @@ class Installer {
       if (message === 'install-fleet-admrl') {
         this.installFleetAdmrl(message);
       }
+      else {
+        this.sendConsoleLine(`Unknown command '${message}'`);
+      }
     });
     this.sendConsoleLine('Welcome to Rear Admrl Console 1.0.0');
   }

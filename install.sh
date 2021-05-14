@@ -25,4 +25,4 @@ echo "npm: $(npm -v)"
 npm install
 npm run initialize
 
-
+echo "goto http://$(hostname -I):4280/ to continue setup"

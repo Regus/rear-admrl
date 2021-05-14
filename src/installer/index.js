@@ -12,6 +12,9 @@ class Installer {
       else if (message === 'install-tooling') {
         this.installTooling(message);
       }
+      else if (message === 'list-printer-ports') {
+        this.listPrinterPorts(message);
+      }
       else {
         this.sendConsoleLine(`Unknown command '${message}'`);
       }
@@ -60,6 +63,22 @@ class Installer {
         this.sendConsole(data);
       });
     });
+  }
+
+  async installTooling(command) {
+    try {
+      code = await this.executeCmd('ls /dev/serial/by-id/*');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+      this.sendCommandComplete(command);
+    } catch (ex) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendConsoleLine('' + ex);
+      this.sendCommandFailed(command);
+    }
   }
 
   async installTooling(command) {

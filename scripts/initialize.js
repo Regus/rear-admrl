@@ -32,7 +32,7 @@ shell.exec('mkdir fleet-data');
 shell.exec('mkdir fleet-data/install-app');
 shell.exec('mkdir fleet-data/fleet-admrl');
 shell.exec('cp -r /home/pi/rear-admrl/install-app/* /home/pi/fleet-data/install-app');
-shell.exec('cp /home/pi/rear-admrl/default-conf.json /home/pi/rear-admrl.json');
+shell.exec('cp /home/pi/rear-admrl/default-conf.json /home/pi/fleet-data/rear-admrl.json');
 
 shell.exec('sudo mv /home/pi/rear-admrl.service /etc/systemd/system/rear-admrl.service');
 shell.exec('sudo systemctl enable rear-admrl.service');

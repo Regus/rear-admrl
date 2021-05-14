@@ -3,16 +3,16 @@ const fs = require('fs');
 const expressWs = require('express-ws');
 const Installer = require('./installer');
 
-const config = JSON.parse(fs.readFileSync('/home/pi/rear-admrl.json'));
+const config = JSON.parse(fs.readFileSync('/home/pi/fleet-data/rear-admrl.json'));
 
 const app = express();
 expressWs(app);
 
-app.use('/setup', express.static('/home/pi/rear-admrl-data/install-app', {
+app.use('/setup', express.static('/home/pi/fleet-data/install-app', {
   index: 'index.html'
 }));
 
-app.use('/', express.static('/home/pi/rear-admrl-data/fleet-admrl', {
+app.use('/', express.static('/home/pi/fleet-data/fleet-admrl', {
   index: 'index.html'
 }));
 

@@ -7,8 +7,8 @@ class Installer {
     this.ws = ws;
 
     this.ws.on('message', (message) => {
-      if (message === 'install-fleet-admiral') {
-        this.installFleetAdmiral(message);
+      if (message === 'install-fleet-admrl') {
+        this.installFleetAdmrl(message);
       }
     });
 
@@ -19,6 +19,13 @@ class Installer {
   sendCommandComplete(command) {
     this.ws.send(JSON.stringify({
       type: 'command-complete',
+      data: command
+    }));
+  }
+
+  sendCommandFailed(command) {
+    this.ws.send(JSON.stringify({
+      type: 'command-failed',
       data: command
     }));
   }
@@ -52,9 +59,9 @@ class Installer {
     });
   }
 
-  async installFleetAdmiral(command) {
+  async installFleetAdmrl(command) {
     try {
-      this.sendConsoleLine('Installing Fleet Admiral...');
+      this.sendConsoleLine('Installing Fleet Admrl...');
       let code = 0;
       process.chdir('/home/pi/');
       if (fs.existsSync('/home/pi/fleet-admrl')) {
@@ -62,6 +69,7 @@ class Installer {
         code = await this.executeCmd('git pull');
         if (code !== 0) {
           this.sendConsoleLine('Installation Failed!');
+          this.sendCommandFailed(command);
           return;
         }
       }
@@ -69,6 +77,7 @@ class Installer {
         code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
         if (code !== 0) {
           this.sendConsoleLine('Installation Failed!');
+          this.sendCommandFailed(command);
           return;
         }
       }
@@ -76,16 +85,19 @@ class Installer {
       code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
         return;
       }
       code = await this.executeCmd('npm install --loglevel verbose');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
         return;
       }
       code = await this.executeCmd('npm run dist');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
         return;
       }
       process.chdir('/home/pi/');
@@ -93,6 +105,7 @@ class Installer {
       code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/fleet-data/fleet-admrl/');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
         return;
       }
 
@@ -107,6 +120,7 @@ class Installer {
       code = await this.executeCmd('sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 4280');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
         return;
       }
 

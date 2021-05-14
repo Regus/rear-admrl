@@ -22,6 +22,11 @@ function init() {
         glbl.consoleBuffer = '';
       }
     }
+    if (message.type === 'command-complete') {
+      if (message.data === 'install-fleet-admrl') {
+        location.href = '::/' + location.hostname + '/';
+      }
+    }
   };
 
   glbl.ws.onerror = function (event) {
@@ -33,6 +38,6 @@ window.addEventListener('load', function() {
   init();
 });
 
-function installFleetAdmiral() {
-  glbl.ws.send('install-fleet-admiral');
+function installFleetAdmrl() {
+  glbl.ws.send('install-fleet-admrl');
 }

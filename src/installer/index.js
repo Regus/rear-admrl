@@ -65,7 +65,7 @@ class Installer {
     });
   }
 
-  async installTooling(command) {
+  async listPrinterPorts(command) {
     try {
       code = await this.executeCmd('ls /dev/serial/by-id/*');
       if (code !== 0) {

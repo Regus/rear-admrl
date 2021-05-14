@@ -5,15 +5,12 @@ class Installer {
 
   constructor(ws) {
     this.ws = ws;
-
     this.ws.on('message', (message) => {
       if (message === 'install-fleet-admrl') {
         this.installFleetAdmrl(message);
       }
     });
-
-
-    shell.exec('echo "$USER"');
+    this.sendConsoleLine('Welcome to Rear Admrl Console 1.0.0');
   }
 
   sendCommandComplete(command) {

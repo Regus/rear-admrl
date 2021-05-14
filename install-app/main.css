@@ -3,8 +3,12 @@ button {
   margin: 5px;
 }
 
+.fleet-link-container {
+  padding: 25px;
+  text-align: center;
+}
+
 .fleet-link {
-  margin: 15px;
   color: aquamarine;
 }
 

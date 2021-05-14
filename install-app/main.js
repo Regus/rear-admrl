@@ -29,6 +29,7 @@ function init() {
         link.className = 'fleet-link';
         link.innerText = 'Go to Fleet Admrl'
         var line = document.createElement('div');
+        line.className = 'fleet-link-container';
         line.appendChild(link);
         glbl.console.appendChild(line);
         glbl.console.scrollTop = glbl.console.scrollHeight;

@@ -24,7 +24,7 @@ function init() {
     }
     if (message.type === 'command-complete') {
       if (message.data === 'install-fleet-admrl') {
-        location.href = '::/' + location.hostname + '/';
+        location.href = '//' + location.hostname + '/';
       }
     }
   };

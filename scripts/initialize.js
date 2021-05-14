@@ -4,6 +4,7 @@ var fs = require('fs');
 process.chdir('/home/pi/');
 
 
+shell.exec('sudo systemctl stop rear-admrl.service');
 
 var nodeVersion = shell.exec('node --version', {silent:true}).stdout.trim();
 

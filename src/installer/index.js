@@ -55,8 +55,14 @@ class Installer {
   async installFleetAdmiral(command) {
     try {
       this.sendConsoleLine('Installing Fleet Admiral...');
-      process.chdir('/home/pi/fleet-admrl/');
       let code = 0;
+      process.chdir('/home/pi/');
+      code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        return;
+      }
+      process.chdir('/home/pi/fleet-admrl/');
       code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');

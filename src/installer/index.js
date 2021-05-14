@@ -158,7 +158,7 @@ class Installer {
         return;
       }
 
-      fs.unlinkSync('./home/pi/moonraker/scripts/install-rear-admrl.sh');
+      fs.unlinkSync('/home/pi/moonraker/scripts/install-rear-admrl.sh');
       process.chdir('/home/pi/');
 
       this.sendConsoleLine('-------------------------------------------');

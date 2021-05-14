@@ -57,10 +57,20 @@ class Installer {
       this.sendConsoleLine('Installing Fleet Admiral...');
       let code = 0;
       process.chdir('/home/pi/');
-      code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        return;
+      if (fs.existsSync('/home/pi/fleet-admrl')) {
+        process.chdir('/home/pi/fleet-admrl');
+        code = await this.executeCmd('git pull');
+        if (code !== 0) {
+          this.sendConsoleLine('Installation Failed!');
+          return;
+        }
+      }
+      else {
+        code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
+        if (code !== 0) {
+          this.sendConsoleLine('Installation Failed!');
+          return;
+        }
       }
       process.chdir('/home/pi/fleet-admrl/');
       code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
@@ -79,11 +89,7 @@ class Installer {
         return;
       }
       process.chdir('/home/pi/');
-      code = await this.executeCmd('rm /home/pi/fleet-data/fleet-admrl/*');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        return;
-      }
+      await this.executeCmd('rm -r /home/pi/fleet-data/fleet-admrl/*');
       code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/fleet-data/fleet-admrl/');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');

@@ -86,8 +86,8 @@ class Installer {
     }
 
     const klipperScript = fs.readFileSync('./klipper/scripts/install-octopi.sh').toString();
-    const runIndex = klipperScript.indexOf('# Run installation steps defined above');
-    let klipperAdmrlScript = klipperScript.substr(0, runIndex);
+    const klipperRunIndex = klipperScript.indexOf('# Run installation steps defined above');
+    let klipperAdmrlScript = klipperScript.substr(0, klipperRunIndex);
     klipperAdmrlScript += '# Run installation steps defined above\n';
     klipperAdmrlScript += 'verify_ready\n';
     klipperAdmrlScript += 'install_packages\n';
@@ -132,14 +132,16 @@ class Installer {
     }
     process.chdir('/home/pi/moonraker/scripts');
 
-    const moonrakerScript = fs.readFileSync('/home/pi/moonraker/scripts/install-moonraker.sh').toString();
-    const runIndex = moonrakerScript.indexOf('# Run installation steps defined above');
-    let moonrakerAdmrlScript = moonrakerScript.substr(0, runIndex);
-    moonrakerAdmrlScript += '# Run installation steps defined above\n';
-    moonrakerAdmrlScript += 'verify_ready\n';
-    moonrakerAdmrlScript += 'install_packages\n';
-    moonrakerAdmrlScript += 'create_virtualenv\n';
-    fs.writeFileSync('/home/pi/moonraker/scripts/install-rear-admrl.sh', moonrakerAdmrlScript);
+    {
+      const moonrakerScript = fs.readFileSync('/home/pi/moonraker/scripts/install-moonraker.sh').toString();
+      const moonrakerRunIndex = moonrakerScript.indexOf('# Run installation steps defined above');
+      let moonrakerAdmrlScript = moonrakerScript.substr(0, moonrakerRunIndex);
+      moonrakerAdmrlScript += '# Run installation steps defined above\n';
+      moonrakerAdmrlScript += 'verify_ready\n';
+      moonrakerAdmrlScript += 'install_packages\n';
+      moonrakerAdmrlScript += 'create_virtualenv\n';
+      fs.writeFileSync('/home/pi/moonraker/scripts/install-rear-admrl.sh', moonrakerAdmrlScript);
+    }
 
     code = await this.executeCmd('chmod +x /home/pi/moonraker/scripts/install-rear-admrl.sh');
     if (code !== 0) {

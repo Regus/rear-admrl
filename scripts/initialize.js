@@ -29,13 +29,13 @@ WantedBy=multi-user.target
 
 fs.writeFileSync('/home/pi/rear-admrl.service', service);
 
-if (fs.existsSync('/home/pi/fleet-data')) {
+if (!fs.existsSync('/home/pi/fleet-data')) {
   shell.exec('mkdir fleet-data');
 }
-if (fs.existsSync('/home/pi/fleet-data/install-app')) {
+if (!fs.existsSync('/home/pi/fleet-data/install-app')) {
   shell.exec('mkdir fleet-data/install-app');
 }
-if (fs.existsSync('/home/pi/fleet-data')) {
+if (!fs.existsSync('/home/pi/fleet-data')) {
   shell.exec('mkdir /home/pi/fleet-data');
 }
 shell.exec('cp -r /home/pi/rear-admrl/install-app/* /home/pi/fleet-data/install-app');

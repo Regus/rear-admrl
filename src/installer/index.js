@@ -9,6 +9,9 @@ class Installer {
       if (message === 'install-fleet-admrl') {
         this.installFleetAdmrl(message);
       }
+      else if (message === 'install-tooling') {
+        this.installTooling(message);
+      }
       else {
         this.sendConsoleLine(`Unknown command '${message}'`);
       }
@@ -59,80 +62,128 @@ class Installer {
     });
   }
 
-  async installFleetAdmrl(command) {
-    try {
-      this.sendConsoleLine('Installing Fleet Admrl...');
-      let code = 0;
-      process.chdir('/home/pi/');
-      if (fs.existsSync('/home/pi/fleet-admrl')) {
-        process.chdir('/home/pi/fleet-admrl');
-        code = await this.executeCmd('git pull');
-        if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
-          return;
-        }
-      }
-      else {
-        code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
-        if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
-          return;
-        }
-      }
-      process.chdir('/home/pi/fleet-admrl/');
-      code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
-        return;
-      }
-      code = await this.executeCmd('npm install --loglevel verbose');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
-        return;
-      }
-      code = await this.executeCmd('npm run dist');
+  async installTooling(command) {
+    this.sendConsoleLine('Installing Klipper...');
+    let code = 0;
+    process.chdir('/home/pi/');
+    if (fs.existsSync('/home/pi/klipper')) {
+      process.chdir('/home/pi/klipper');
+      code = await this.executeCmd('git pull');
       if (code !== 0) {
         this.sendConsoleLine('Installation Failed!');
         this.sendCommandFailed(command);
         return;
       }
       process.chdir('/home/pi/');
-      await this.executeCmd('rm -r /home/pi/fleet-data/fleet-admrl/*');
-      code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/fleet-data/fleet-admrl/');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
-        return;
-      }
-
-      if (fs.existsSync('/etc/nginx/sites-enabled/default')) {
-        this.sendConsoleLine('moving nginx default site to port 8080');
-        let nginx = fs.readFileSync('/etc/nginx/sites-enabled/default');
-        nginx.replace('listen 80', 'listen 8080');
-        nginx.replace('listen [::]:80', 'listen [::]:8080');
-        fs.writeFileSync('/etc/nginx/sites-enabled/default', nginx);
-      }
-
-      code = await this.executeCmd('sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 4280');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
-        return;
-      }
-
-      this.sendConsoleLine('-------------------------------------------');
-      this.sendConsoleLine('Installtion Complete!');
-      this.sendConsoleLine('-------------------------------------------');
-
-      this.sendCommandComplete(command);
-
-    } catch (ex) {
-      console.log(ex);
     }
+    else {
+      code = await this.executeCmd('git clone https://github.com/KevinOConnor/klipper');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+    }
+
+    const klipperScript = fs.readFileSync('./klipper/scripts/install-octopi.sh').toString();
+    const runIndex = klipperScript.indexOf('# Run installation steps defined above');
+    let klipperAdmrlScript = klipperScript.substr(0, runIndex);
+    klipperAdmrlScript += '# Run installation steps defined above\n';
+    klipperAdmrlScript += 'verify_ready\n';
+    klipperAdmrlScript += 'install_packages\n';
+    klipperAdmrlScript += 'create_virtualenv\n';
+    fs.writeFileSync('./klipper/scripts/install-rear-admrl.sh', klipperAdmrlScript);
+
+    code = await this.executeCmd('chmod +x ./klipper/scripts/install-rear-admrl.sh');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    code = await this.executeCmd('./klipper/scripts/install-rear-admrl.sh');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    fs.unlinkSync('./klipper/scripts/install-rear-admrl.sh');
+
+    this.sendConsoleLine('-------------------------------------------');
+    this.sendConsoleLine('Klipper Installtion Complete!');
+    this.sendConsoleLine('-------------------------------------------');
+  }
+
+  async installFleetAdmrl(command) {
+    this.sendConsoleLine('Installing Fleet Admrl...');
+    let code = 0;
+    process.chdir('/home/pi/');
+    if (fs.existsSync('/home/pi/fleet-admrl')) {
+      process.chdir('/home/pi/fleet-admrl');
+      code = await this.executeCmd('git pull');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+    }
+    else {
+      code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+    }
+    process.chdir('/home/pi/fleet-admrl/');
+    code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+    code = await this.executeCmd('npm install --loglevel verbose');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+    code = await this.executeCmd('npm run dist');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+    process.chdir('/home/pi/');
+    await this.executeCmd('rm -r /home/pi/fleet-data/fleet-admrl/*');
+    code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/fleet-data/fleet-admrl/');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    if (fs.existsSync('/etc/nginx/sites-enabled/default')) {
+      this.sendConsoleLine('moving nginx default site to port 8080');
+      let nginx = fs.readFileSync('/etc/nginx/sites-enabled/default');
+      nginx.replace('listen 80', 'listen 8080');
+      nginx.replace('listen [::]:80', 'listen [::]:8080');
+      fs.writeFileSync('/etc/nginx/sites-enabled/default', nginx);
+    }
+
+    code = await this.executeCmd('sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 4280');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    this.sendConsoleLine('-------------------------------------------');
+    this.sendConsoleLine('Fleet Admrl Installtion Complete!');
+    this.sendConsoleLine('-------------------------------------------');
+
+    this.sendCommandComplete(command);
   }
 
 }

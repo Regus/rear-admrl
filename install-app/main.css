@@ -3,6 +3,15 @@ button {
   margin: 5px;
 }
 
+.fleet-link {
+  margin: 15px;
+  color: aquamarine;
+}
+
+.fleet-link:visited {
+  color: aquamarine;
+}
+
 .console {
   font-family: Consolas, Courier New;
   width: 800px;

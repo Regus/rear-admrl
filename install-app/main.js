@@ -24,7 +24,14 @@ function init() {
     }
     if (message.type === 'command-complete') {
       if (message.data === 'install-fleet-admrl') {
-        location.href = '//' + location.hostname + '/';
+        var link = document.createElement('a');
+        link.href = '//' + location.hostname + '/';
+        link.className = 'fleet-link';
+        link.innerText = 'Go to Fleet Admrl'
+        var line = document.createElement('div');
+        line.appendChild(link);
+        glbl.console.appendChild(line);
+        glbl.console.scrollTop = glbl.console.scrollHeight;
       }
     }
   };

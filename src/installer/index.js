@@ -110,8 +110,56 @@ class Installer {
 
     fs.unlinkSync('./klipper/scripts/install-rear-admrl.sh');
 
+    this.sendConsoleLine('Installing Moonraker...');
+
+    if (fs.existsSync('/home/pi/moonraker')) {
+      process.chdir('/home/pi/moonraker');
+      code = await this.executeCmd('git pull');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+      process.chdir('/home/pi/');
+    }
+    else {
+      code = await this.executeCmd('git clone https://github.com/Arksine/moonraker.git');
+      if (code !== 0) {
+        this.sendConsoleLine('Installation Failed!');
+        this.sendCommandFailed(command);
+        return;
+      }
+    }
+    process.chdir('/home/pi/moonraker/scripts');
+
+    const moonrakerScript = fs.readFileSync('/home/pi/moonraker/scripts/install-moonraker.sh').toString();
+    const runIndex = moonrakerScript.indexOf('# Run installation steps defined above');
+    let moonrakerAdmrlScript = moonrakerScript.substr(0, runIndex);
+    moonrakerAdmrlScript += '# Run installation steps defined above\n';
+    moonrakerAdmrlScript += 'verify_ready\n';
+    moonrakerAdmrlScript += 'install_packages\n';
+    moonrakerAdmrlScript += 'create_virtualenv\n';
+    fs.writeFileSync('/home/pi/moonraker/scripts/install-rear-admrl.sh', moonrakerAdmrlScript);
+
+    code = await this.executeCmd('chmod +x /home/pi/moonraker/scripts/install-rear-admrl.sh');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    code = await this.executeCmd('./install-rear-admrl.sh');
+    if (code !== 0) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendCommandFailed(command);
+      return;
+    }
+
+    fs.unlinkSync('./home/pi/moonraker/scripts/install-rear-admrl.sh');
+    process.chdir('/home/pi/');
+
     this.sendConsoleLine('-------------------------------------------');
-    this.sendConsoleLine('Klipper Installtion Complete!');
+    this.sendConsoleLine('Klipper & Moonraker Installation Complete!');
     this.sendConsoleLine('-------------------------------------------');
   }
 
@@ -180,7 +228,7 @@ class Installer {
     }
 
     this.sendConsoleLine('-------------------------------------------');
-    this.sendConsoleLine('Fleet Admrl Installtion Complete!');
+    this.sendConsoleLine('Fleet Admrl Installation Complete!');
     this.sendConsoleLine('-------------------------------------------');
 
     this.sendCommandComplete(command);

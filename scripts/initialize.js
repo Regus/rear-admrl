@@ -29,9 +29,15 @@ WantedBy=multi-user.target
 
 fs.writeFileSync('/home/pi/rear-admrl.service', service);
 
-shell.exec('mkdir fleet-data');
-shell.exec('mkdir fleet-data/install-app');
-shell.exec('mkdir fleet-data/fleet-admrl');
+if (fs.existsSync('/home/pi/fleet-data')) {
+  shell.exec('mkdir fleet-data');
+}
+if (fs.existsSync('/home/pi/fleet-data/install-app')) {
+  shell.exec('mkdir fleet-data/install-app');
+}
+if (fs.existsSync('/home/pi/fleet-data')) {
+  shell.exec('mkdir /home/pi/fleet-data');
+}
 shell.exec('cp -r /home/pi/rear-admrl/install-app/* /home/pi/fleet-data/install-app');
 shell.exec('cp /home/pi/rear-admrl/default-conf.json /home/pi/fleet-data/rear-admrl.json');
 

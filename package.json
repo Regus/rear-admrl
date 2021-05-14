@@ -1,0 +1,22 @@
+{
+  "name": "rear-admrl",
+  "version": "1.0.0",
+  "description": "rear-admrl",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "initialize": "node ./scripts/initialize.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "shelljs": "^0.8.4",
+    "ws": "^7.4.5"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
+  }
+}

@@ -1,12 +1,12 @@
-var shell = require('shelljs');
-var fs = require('fs');
-
-printer1 = new Gpio(26, 'out');
-printer2 = new Gpio(16, 'out');
-printer3 = new Gpio(20, 'out');
-printer4 = new Gpio(21, 'out');
+const shell = require('shelljs');
+const fs = require('fs');
+const Gpio = require('onoff').Gpio;
 
 class Installer {
+  printer1 = new Gpio(26, 'out');
+  printer2 = new Gpio(16, 'out');
+  printer3 = new Gpio(20, 'out');
+  printer4 = new Gpio(21, 'out');
 
   constructor(ws) {
     this.ws = ws;
@@ -78,10 +78,10 @@ class Installer {
 
   turnOnAllPrinters(command) {
     try {
-      printer1.writeSync(1);
-      printer2.writeSync(1);
-      printer3.writeSync(1);
-      printer4.writeSync(1);
+      this.printer1.writeSync(1);
+      this.printer2.writeSync(1);
+      this.printer3.writeSync(1);
+      this.printer4.writeSync(1);
       this.sendCommandComplete(command);
     } catch (ex) {
       this.sendConsoleLine('Installation Failed!');
@@ -92,10 +92,10 @@ class Installer {
 
   turnOffAllPrinters(command) {
     try {
-      printer1.writeSync(0);
-      printer2.writeSync(0);
-      printer3.writeSync(0);
-      printer4.writeSync(0);
+      this.printer1.writeSync(0);
+      this.printer2.writeSync(0);
+      this.printer3.writeSync(0);
+      this.printer4.writeSync(0);
       this.sendCommandComplete(command);
     } catch (ex) {
       this.sendConsoleLine('Installation Failed!');

@@ -4,7 +4,7 @@ const RemoteConsole = require('./RemoteConsole');
 
 class ClientConnection {
 
-  constructor(w, power) {
+  constructor(ws, power) {
     this.ws = ws;
     this.remoteConsole = new RemoteConsole(this);
     this.installer = new Installer(this, this.remoteConsole);

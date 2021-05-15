@@ -1,13 +1,7 @@
 const shell = require('shelljs');
 const fs = require('fs');
-const Gpio = require('onoff').Gpio;
 
 class Installer {
-  printer1 = new Gpio(26, 'out');
-  printer2 = new Gpio(16, 'out');
-  printer3 = new Gpio(20, 'out');
-  printer4 = new Gpio(21, 'out');
-
   constructor(connection, remoteConsole) {
     this.connection = connection;
     this.remoteConsole = remoteConsole;

@@ -1,21 +1,20 @@
 const Installer = require('./installer');
-const Power = require('./Power');
 const PrinterSetup = require('./PrinterSetup');
 const RemoteConsole = require('./RemoteConsole');
 
 class ClientConnection {
 
-  constructor(ws) {
+  constructor(w, power) {
     this.ws = ws;
     this.remoteConsole = new RemoteConsole(this);
     this.installer = new Installer(this, this.remoteConsole);
-    this.power = new Power(this, this.remoteConsole);
+    this.power = power;
     this.printerSetup = new PrinterSetup(this, this.remoteConsole);
     this.ws.on('message', (message) => {
       if (this.installer.handleMessage(message)) {
         return;
       }
-      if (this.power.handleMessage(message)) {
+      if (this.power.handleMessage(message, this.remoteConsole)) {
         return;
       }
       if (this.printerSetup.handleMessage(message)) {

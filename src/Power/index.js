@@ -6,9 +6,7 @@ class Power {
   printer3 = new Gpio(20, 'out');
   printer4 = new Gpio(21, 'out');
 
-  constructor(connection, remoteConsole) {
-    this.connection = connection;
-    this.remoteConsole = remoteConsole;
+  constructor() {
   }
 
   handleMessage(message) {
@@ -23,31 +21,31 @@ class Power {
     return false;
   }
 
-  turnOnAllPrinters(command) {
+  turnOnAllPrinters(command, remoteConsole) {
     try {
       this.printer1.writeSync(1);
       this.printer2.writeSync(1);
       this.printer3.writeSync(1);
       this.printer4.writeSync(1);
-      this.remoteConsole.sendCommandComplete(command);
+      remoteConsole.sendCommandComplete(command);
     } catch (ex) {
-      this.remoteConsole.sendLine('Installation Failed!');
-      this.remoteConsole.sendLine('' + ex);
-      this.remoteConsole.sendCommandFailed(command);
+      remoteConsole.sendLine('Installation Failed!');
+      remoteConsole.sendLine('' + ex);
+      remoteConsole.sendCommandFailed(command);
     }
   }
 
-  turnOffAllPrinters(command) {
+  turnOffAllPrinters(command, remoteConsole) {
     try {
       this.printer1.writeSync(0);
       this.printer2.writeSync(0);
       this.printer3.writeSync(0);
       this.printer4.writeSync(0);
-      this.remoteConsole.sendCommandComplete(command);
+      remoteConsole.sendCommandComplete(command);
     } catch (ex) {
-      this.remoteConsole.sendLine('Installation Failed!');
-      this.remoteConsole.sendLine('' + ex);
-      this.remoteConsole.sendCommandFailed(command);
+      remoteConsole.sendLine('Installation Failed!');
+      remoteConsole.sendLine('' + ex);
+      remoteConsole.sendCommandFailed(command);
     }
   }
 }

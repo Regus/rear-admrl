@@ -8,62 +8,26 @@ class Installer {
   printer3 = new Gpio(20, 'out');
   printer4 = new Gpio(21, 'out');
 
-  constructor(ws) {
-    this.ws = ws;
-    this.ws.on('message', (message) => {
-      if (message === 'install-fleet-admrl') {
-        this.installFleetAdmrl(message);
-      }
-      else if (message === 'install-tooling') {
-        this.installTooling(message);
-      }
-      else if (message === 'list-printer-ports') {
-        this.listPrinterPorts(message);
-      }
-      else if (message === 'turn-on-all-printers') {
-        this.turnOnAllPrinters(message);
-      }
-      else if (message === 'turn-off-all-printers') {
-        this.turnOffAllPrinters(message);
-      }
-      else {
-        this.sendConsoleLine(`Unknown command '${message}'`);
-      }
-    });
-    this.sendConsoleLine('Welcome to Rear Admrl Console 1.0.0');
+  constructor(connection, remoteConsole) {
+    this.connection = connection;
+    this.remoteConsole = remoteConsole;
   }
 
-  sendCommandComplete(command) {
-    this.ws.send(JSON.stringify({
-      type: 'command-complete',
-      data: command
-    }));
-  }
-
-  sendCommandFailed(command) {
-    this.ws.send(JSON.stringify({
-      type: 'command-failed',
-      data: command
-    }));
-  }
-
-  sendConsoleLine(text) {
-    this.ws.send(JSON.stringify({
-      type: 'console',
-      data: text + '\n'
-    }));
-  }
-
-  sendConsole(text) {
-    this.ws.send(JSON.stringify({
-      type: 'console',
-      data: text
-    }));
+  handleMessage(message) {
+    if (message === 'installer.install-fleet-admrl') {
+      this.installFleetAdmrl(message);
+      return true;
+    }
+    else if (message === 'installer.install-tooling') {
+      this.installTooling(message);
+      return true;
+    }
+    return false;
   }
 
   async executeCmd(command) {
     return new Promise(resolve => {
-      this.sendConsoleLine(command);
+      this.remoteConsole.sendLine(command);
       const proc = shell.exec(command, {async: true, silent: true}, (code) => {
         resolve(code);
       });
@@ -76,61 +40,17 @@ class Installer {
     });
   }
 
-  turnOnAllPrinters(command) {
-    try {
-      this.printer1.writeSync(1);
-      this.printer2.writeSync(1);
-      this.printer3.writeSync(1);
-      this.printer4.writeSync(1);
-      this.sendCommandComplete(command);
-    } catch (ex) {
-      this.sendConsoleLine('Installation Failed!');
-      this.sendConsoleLine('' + ex);
-      this.sendCommandFailed(command);
-    }
-  }
-
-  turnOffAllPrinters(command) {
-    try {
-      this.printer1.writeSync(0);
-      this.printer2.writeSync(0);
-      this.printer3.writeSync(0);
-      this.printer4.writeSync(0);
-      this.sendCommandComplete(command);
-    } catch (ex) {
-      this.sendConsoleLine('Installation Failed!');
-      this.sendConsoleLine('' + ex);
-      this.sendCommandFailed(command);
-    }
-  }
-
-  async listPrinterPorts(command) {
-    try {
-      code = await this.executeCmd('ls /dev/serial/by-id/*');
-      if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
-        return;
-      }
-      this.sendCommandComplete(command);
-    } catch (ex) {
-      this.sendConsoleLine('Installation Failed!');
-      this.sendConsoleLine('' + ex);
-      this.sendCommandFailed(command);
-    }
-  }
-
   async installTooling(command) {
     try {
-      this.sendConsoleLine('Installing Klipper...');
+      this.remoteConsole.sendLine('Installing Klipper...');
       let code = 0;
       process.chdir('/home/pi/');
       if (fs.existsSync('/home/pi/klipper')) {
         process.chdir('/home/pi/klipper');
         code = await this.executeCmd('git pull');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
         process.chdir('/home/pi/');
@@ -138,8 +58,8 @@ class Installer {
       else {
         code = await this.executeCmd('git clone https://github.com/KevinOConnor/klipper');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
       }
@@ -155,28 +75,28 @@ class Installer {
 
       code = await this.executeCmd('chmod +x ./klipper/scripts/install-rear-admrl.sh');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
       code = await this.executeCmd('./klipper/scripts/install-rear-admrl.sh');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
       fs.unlinkSync('./klipper/scripts/install-rear-admrl.sh');
 
-      this.sendConsoleLine('Installing Moonraker...');
+      this.remoteConsole.sendLine('Installing Moonraker...');
 
       if (fs.existsSync('/home/pi/moonraker')) {
         process.chdir('/home/pi/moonraker');
         code = await this.executeCmd('git pull');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
         process.chdir('/home/pi/');
@@ -184,8 +104,8 @@ class Installer {
       else {
         code = await this.executeCmd('git clone https://github.com/Arksine/moonraker.git');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
       }
@@ -204,85 +124,85 @@ class Installer {
 
       code = await this.executeCmd('chmod +x /home/pi/moonraker/scripts/install-rear-admrl.sh');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
       code = await this.executeCmd('./install-rear-admrl.sh');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
       fs.unlinkSync('/home/pi/moonraker/scripts/install-rear-admrl.sh');
       process.chdir('/home/pi/');
 
-      this.sendConsoleLine('-------------------------------------------');
-      this.sendConsoleLine('Klipper & Moonraker Installation Complete!');
-      this.sendConsoleLine('-------------------------------------------');
+      this.remoteConsole.sendLine('-------------------------------------------');
+      this.remoteConsole.sendLine('Klipper & Moonraker Installation Complete!');
+      this.remoteConsole.sendLine('-------------------------------------------');
 
-      this.sendCommandComplete(command);
+      this.remoteConsole.sendCommandComplete(command);
     } catch (ex) {
-      this.sendConsoleLine('Installation Failed!');
-      this.sendConsoleLine('' + ex);
-      this.sendCommandFailed(command);
+      this.remoteConsole.sendLine('Installation Failed!');
+      this.remoteConsole.sendLine('' + ex);
+      this.remoteConsole.sendCommandFailed(command);
     }
   }
 
   async installFleetAdmrl(command) {
     try {
-      this.sendConsoleLine('Installing Fleet Admrl...');
+      this.remoteConsole.sendLine('Installing Fleet Admrl...');
       let code = 0;
       process.chdir('/home/pi/');
       if (fs.existsSync('/home/pi/fleet-admrl')) {
         process.chdir('/home/pi/fleet-admrl');
         code = await this.executeCmd('git pull');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
       }
       else {
         code = await this.executeCmd('git clone https://github.com/Regus/fleet-admrl.git');
         if (code !== 0) {
-          this.sendConsoleLine('Installation Failed!');
-          this.sendCommandFailed(command);
+          this.remoteConsole.sendLine('Installation Failed!');
+          this.remoteConsole.sendCommandFailed(command);
           return;
         }
       }
       process.chdir('/home/pi/fleet-admrl/');
       code = await this.executeCmd('npm install -g @angular/cli --loglevel verbose');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
       code = await this.executeCmd('npm install --loglevel verbose');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
       code = await this.executeCmd('npm run dist');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
       process.chdir('/home/pi/');
       await this.executeCmd('rm -r /home/pi/fleet-data/fleet-admrl/*');
       code = await this.executeCmd('cp -r /home/pi/fleet-admrl/dist/fleet-admrl/* /home/pi/fleet-data/fleet-admrl/');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
       if (fs.existsSync('/etc/nginx/sites-enabled/default')) {
-        this.sendConsoleLine('moving nginx default site to port 8080');
+        this.remoteConsole.sendLine('moving nginx default site to port 8080');
         let nginx = fs.readFileSync('/etc/nginx/sites-enabled/default');
         nginx.replace('listen 80', 'listen 8080');
         nginx.replace('listen [::]:80', 'listen [::]:8080');
@@ -291,20 +211,20 @@ class Installer {
 
       code = await this.executeCmd('sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 4280');
       if (code !== 0) {
-        this.sendConsoleLine('Installation Failed!');
-        this.sendCommandFailed(command);
+        this.remoteConsole.sendLine('Installation Failed!');
+        this.remoteConsole.sendCommandFailed(command);
         return;
       }
 
-      this.sendConsoleLine('-------------------------------------------');
-      this.sendConsoleLine('Fleet Admrl Installation Complete!');
-      this.sendConsoleLine('-------------------------------------------');
+      this.remoteConsole.sendLine('-------------------------------------------');
+      this.remoteConsole.sendLine('Fleet Admrl Installation Complete!');
+      this.remoteConsole.sendLine('-------------------------------------------');
 
-      this.sendCommandComplete(command);
+      this.remoteConsole.sendCommandComplete(command);
     } catch (ex) {
-      this.sendConsoleLine('Installation Failed!');
-      this.sendConsoleLine('' + ex);
-      this.sendCommandFailed(command);
+      this.remoteConsole.sendLine('Installation Failed!');
+      this.remoteConsole.sendLine('' + ex);
+      this.remoteConsole.sendCommandFailed(command);
     }
   }
 

@@ -33,13 +33,20 @@ class PrinterSetup {
 
   async listPrinterPorts(command) {
     try {
-      code = await this.executeCmd('ls /dev/serial/by-id/*');
-      if (code !== 0) {
-        this.remoteConsole.sendLine('Installation Failed!');
-        this.remoteConsole.sendCommandFailed(command);
-        return;
-      }
-      this.remoteConsole.sendCommandComplete(command);
+      shell.exec(command, {async: true, silent: true}, (code, stdout, stderr) => {
+        if (code !== 0)   {
+          this.connection.send(JSON.stringify({
+            type: 'printer-ports',
+            data: []
+          }))
+        }
+        else {
+          this.connection.send(JSON.stringify({
+            type: 'printer-ports',
+            data: stdout.split(' ')
+          }))
+        }
+      });
     } catch (ex) {
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);

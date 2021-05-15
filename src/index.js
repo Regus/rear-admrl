@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const expressWs = require('express-ws');
-const Installer = require('./installer');
+const ClientConnection = require('./ClientConnection');
 
 const config = JSON.parse(fs.readFileSync('/home/pi/fleet-data/rear-admrl.json'));
 
@@ -21,7 +21,7 @@ app.use('/', express.static('/home/pi/fleet-data/fleet-admrl', {
 // })
 
 app.ws('/ws', function(ws, req) {
-  new Installer(ws);
+  new ClientConnection(ws);
 });
 
 app.listen(config.port)

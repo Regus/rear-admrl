@@ -23,10 +23,10 @@ class PrinterSetup {
         resolve(code);
       });
       proc.stdout.on('data', (data) => {
-        this.remoteConsole.sendConsole(data);
+        this.remoteConsole.send(data);
       });
       proc.stderr.on('data', (data) => {
-        this.remoteConsole.sendConsole(data);
+        this.remoteConsole.send(data);
       });
     });
   }

@@ -26,10 +26,10 @@ class Installer {
         resolve(code);
       });
       proc.stdout.on('data', (data) => {
-        this.sendConsole(data);
+        this.remoteConsole.send(data);
       });
       proc.stderr.on('data', (data) => {
-        this.sendConsole(data);
+        this.remoteConsole.send(data);
       });
     });
   }

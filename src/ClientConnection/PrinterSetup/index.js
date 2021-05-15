@@ -70,7 +70,7 @@ class PrinterSetup {
         path: '',
         content: config
       })
-      const regex = /source "src\/(\S+)"/g;
+      const regex = /source "(src\/\S+)"/g;
       let match;
       while (match = regex.exec(config)) {
         const path = match[1];

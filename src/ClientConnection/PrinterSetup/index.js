@@ -65,23 +65,23 @@ class PrinterSetup {
   async getKConfig(command) {
     try {
       const kconfigs = [];
-      const config = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
-      kconfigs.push({
-        path: '',
-        content: config
-      })
+      let config = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
       const regex = /source "(src\/\S+)"/g;
       let match;
       while (match = regex.exec(config)) {
         const path = match[1];
         kconfigs.push({
-          path,
-          content: fs.readFileSync(`/home/pi/klipper/${path}`).toString()
+          search: match[0],
+          replace: fs.readFileSync(`/home/pi/klipper/${path}`).toString()
         })
       }
+      kconfigs.forEach(item => {
+        config = config.replace(item.search, item.replace);
+      });
+
       this.connection.send(JSON.stringify({
         type: 'kconfig',
-        data: kconfigs
+        data: config
       }))
     } catch (ex) {
       this.remoteConsole.sendLine('Installation Failed!');

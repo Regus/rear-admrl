@@ -1,6 +1,11 @@
 var shell = require('shelljs');
 var fs = require('fs');
 
+printer1 = new Gpio(26, 'out');
+printer2 = new Gpio(16, 'out');
+printer3 = new Gpio(20, 'out');
+printer4 = new Gpio(21, 'out');
+
 class Installer {
 
   constructor(ws) {
@@ -14,6 +19,12 @@ class Installer {
       }
       else if (message === 'list-printer-ports') {
         this.listPrinterPorts(message);
+      }
+      else if (message === 'turn-on-all-printers') {
+        this.turnOnAllPrinters(message);
+      }
+      else if (message === 'turn-off-all-printers') {
+        this.turnOffAllPrinters(message);
       }
       else {
         this.sendConsoleLine(`Unknown command '${message}'`);
@@ -63,6 +74,34 @@ class Installer {
         this.sendConsole(data);
       });
     });
+  }
+
+  turnOnAllPrinters(command) {
+    try {
+      printer1.writeSync(1);
+      printer2.writeSync(1);
+      printer3.writeSync(1);
+      printer4.writeSync(1);
+      this.sendCommandComplete(command);
+    } catch (ex) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendConsoleLine('' + ex);
+      this.sendCommandFailed(command);
+    }
+  }
+
+  turnOffAllPrinters(command) {
+    try {
+      printer1.writeSync(0);
+      printer2.writeSync(0);
+      printer3.writeSync(0);
+      printer4.writeSync(0);
+      this.sendCommandComplete(command);
+    } catch (ex) {
+      this.sendConsoleLine('Installation Failed!');
+      this.sendConsoleLine('' + ex);
+      this.sendCommandFailed(command);
+    }
   }
 
   async listPrinterPorts(command) {

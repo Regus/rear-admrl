@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
+    "onoff": "^6.0.3",
     "shelljs": "^0.8.4",
     "ws": "^7.4.5"
   },

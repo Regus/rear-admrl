@@ -21,7 +21,7 @@ class ClientConnection {
       if (this.printerSetup.handleMessage(message)) {
         return;
       }
-      this.sendConsoleLine(`Unknown command '${message}'`);
+      this.remoteConsole.sendLine(`Unknown command '${message}'`);
     });
   }
 

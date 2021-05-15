@@ -33,7 +33,7 @@ class PrinterSetup {
 
   async listPrinterPorts(command) {
     try {
-      shell.exec(command, {async: true, silent: true}, (code, stdout, stderr) => {
+      shell.exec('ls /dev/serial/by-id/*', {async: true, silent: true}, (code, stdout, stderr) => {
         this.remoteConsole.sendLine('update ports');
         this.remoteConsole.sendLine(code);
         this.remoteConsole.sendLine(stdout);

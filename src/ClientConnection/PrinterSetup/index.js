@@ -47,7 +47,7 @@ class PrinterSetup {
         else {
           this.connection.send(JSON.stringify({
             type: 'printer-ports',
-            data: stdout.split(' ')
+            data: stdout.trim().split(/\s+/)
           }))
         }
       });

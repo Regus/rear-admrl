@@ -76,7 +76,7 @@ class PrinterSetup {
         const path = match[1];
         kconfigs.push({
           path,
-          content: fs.readFileSync(`/home/pi/klipper/${path}`).toString();
+          content: fs.readFileSync(`/home/pi/klipper/${path}`).toString()
         })
       }
       this.connection.send(JSON.stringify({

@@ -9,13 +9,13 @@ class Power {
   constructor() {
   }
 
-  handleMessage(message) {
+  handleMessage(message, remoteConsole) {
     if (message === 'power.turn-on-all') {
-      this.turnOnAllPrinters(message);
+      this.turnOnAllPrinters(message, remoteConsole);
       return true;
     }
     else if (message === 'power.turn-off-all') {
-      this.turnOffAllPrinters(message);
+      this.turnOffAllPrinters(message, remoteConsole);
       return true;
     }
     return false;

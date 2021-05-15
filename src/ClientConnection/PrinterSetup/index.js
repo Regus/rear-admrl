@@ -13,6 +13,10 @@ class PrinterSetup {
       this.listPrinterPorts(message);
       return true;
     }
+    if (message === 'printer-setup.get-kconfig') {
+      this.getKConfig(message);
+      return true;
+    }
     return false;
   }
 
@@ -56,6 +60,35 @@ class PrinterSetup {
       this.remoteConsole.sendLine('' + ex);
       this.remoteConsole.sendCommandFailed(command);
     }
+  }
+
+  async getKConfig(command) {
+    try {
+      const kconfigs = [];
+      const config = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
+      kconfigs.push({
+        path: '',
+        content: config
+      })
+      const regex = /source "src\/(\S+)"/g;
+      let match;
+      while (match = regex.exec(config)) {
+        const path = match[1];
+        kconfigs.push({
+          path,
+          content: fs.readFileSync(`/home/pi/klipper/${path}`).toString();
+        })
+      }
+      this.connection.send(JSON.stringify({
+        type: 'kconfig',
+        data: kconfigs
+      }))
+    } catch (ex) {
+      this.remoteConsole.sendLine('Installation Failed!');
+      this.remoteConsole.sendLine('' + ex);
+      this.remoteConsole.sendCommandFailed(command);
+    }
+
   }
 
 

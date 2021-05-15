@@ -13,11 +13,11 @@ class Power {
 
   handleMessage(message) {
     if (message === 'power.turn-on-all') {
-      this.installFleetAdmrl(message);
+      this.turnOnAllPrinters(message);
       return true;
     }
     else if (message === 'power.turn-off-all') {
-      this.installTooling(message);
+      this.turnOffAllPrinters(message);
       return true;
     }
     return false;

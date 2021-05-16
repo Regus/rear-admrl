@@ -65,10 +65,11 @@ class PrinterSetup {
   async getKConfig(command) {
     try {
       const kconfigs = [];
-      let config = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
+      let kconfig = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
+      const config = fs.readFileSync('/home/pi/klipper/.config').toString();
       const regex = /source "(src\/\S+)"/g;
       let match;
-      while (match = regex.exec(config)) {
+      while (match = regex.exec(kconfig)) {
         const path = match[1];
         kconfigs.push({
           search: match[0],
@@ -76,12 +77,15 @@ class PrinterSetup {
         })
       }
       kconfigs.forEach(item => {
-        config = config.replace(item.search, item.replace);
+        kconfig = kconfig.replace(item.search, item.replace);
       });
 
       this.connection.send(JSON.stringify({
         type: 'kconfig',
-        data: config
+        data: {
+          kconfig,
+          config
+        }
       }))
     } catch (ex) {
       this.remoteConsole.sendLine('Installation Failed!');

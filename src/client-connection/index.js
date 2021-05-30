@@ -1,16 +1,18 @@
 const Installer = require('./installer');
-const PrinterSetup = require('./PrinterSetup');
-const RemoteConsole = require('./RemoteConsole');
+const PrinterSetup = require('./printer-setup');
+const RemoteConsole = require('./remote-console');
 
 class ClientConnection {
 
-  constructor(ws, power) {
+  constructor(ws, power, database) {
     this.ws = ws;
     this.remoteConsole = new RemoteConsole(this);
     this.installer = new Installer(this, this.remoteConsole);
     this.power = power;
-    this.printerSetup = new PrinterSetup(this, this.remoteConsole);
-    this.ws.on('message', (message) => {
+    this.database = database;
+    this.printerSetup = new PrinterSetup(this, this.remoteConsole, this.database);
+    this.ws.on('message', (packet) => {
+      const message = JSON.parse(packet);
       if (this.installer.handleMessage(message)) {
         return;
       }

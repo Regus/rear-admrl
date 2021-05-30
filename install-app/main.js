@@ -47,5 +47,5 @@ window.addEventListener('load', function() {
 });
 
 function installFleetAdmrl() {
-  glbl.ws.send('installer.install-fleet-admrl');
+  glbl.ws.send(JSON.stringify({ command: 'installer.install-fleet-admrl' }));
 }

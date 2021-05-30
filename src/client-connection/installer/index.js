@@ -8,12 +8,12 @@ class Installer {
   }
 
   handleMessage(message) {
-    if (message === 'installer.install-fleet-admrl') {
-      this.installFleetAdmrl(message);
+    if (message.command === 'installer.install-fleet-admrl') {
+      this.installFleetAdmrl(message.command);
       return true;
     }
-    else if (message === 'installer.install-tooling') {
-      this.installTooling(message);
+    else if (message.command === 'installer.install-tooling') {
+      this.installTooling(message.command);
       return true;
     }
     return false;

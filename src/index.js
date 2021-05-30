@@ -1,11 +1,13 @@
 const express = require('express');
 const fs = require('fs');
 const expressWs = require('express-ws');
-const ClientConnection = require('./ClientConnection');
-const Power = require('./Power');
+const ClientConnection = require('./client-connection');
+const Power = require('./power');
+const Database = require('./database');
 
 const config = JSON.parse(fs.readFileSync('/home/pi/fleet-data/rear-admrl.json'));
 const power = new Power();
+const database = new Database();
 
 const app = express();
 expressWs(app);
@@ -23,7 +25,7 @@ app.use('/', express.static('/home/pi/fleet-data/fleet-admrl', {
 // })
 
 app.ws('/ws', function(ws, req) {
-  new ClientConnection(ws, power);
+  new ClientConnection(ws, power, database);
 });
 
 app.listen(config.port)

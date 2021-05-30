@@ -12,7 +12,7 @@ class Database {
     this.printersPath = Path.join(this.fleetPath, 'printersPath');
 
     if (!fs.existsSync(this.printersPath)) {
-      fs.mkdirSync(printersPath);
+      fs.mkdirSync(this.printersPath);
     }
 
     fs.readdirSync(this.printersPath)

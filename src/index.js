@@ -7,7 +7,7 @@ const Database = require('./database');
 
 const config = JSON.parse(fs.readFileSync('/home/pi/fleet-data/rear-admrl.json'));
 const power = new Power();
-const database = new Database();
+const database = new Database('/home/pi/fleet-data');
 
 const app = express();
 expressWs(app);

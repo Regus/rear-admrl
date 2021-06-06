@@ -1,3 +1,4 @@
+const fs = require('fs');
 const fsp = require('fs').promises;
 const Path = require('path');
 var shell = require('shelljs');
@@ -26,8 +27,8 @@ class KlipperManager {
     });
   }
 
-  async isServiceInstalled(printerid) {
-    return await fsp.exists(`/etc/init.d/klipper_${printerid}`);
+  isServiceInstalled(printerid) {
+    fs.existsSync(`/etc/init.d/klipper_${printerid}`);
   }
 
   async start(printerid) {

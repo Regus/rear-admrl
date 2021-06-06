@@ -19,11 +19,11 @@ class PrinterSetup {
       this.listPrinterPorts(message.command);
       return true;
     }
-    if (message === 'printer-setup.get-kconfig') {
+    if (message.command === 'printer-setup.get-kconfig') {
       this.getKConfig(message.command);
       return true;
     }
-    if (message === 'printer-setup.install-printer') {
+    if (message.command === 'printer-setup.install-printer') {
       this.installPrinter(message);
       return true;
     }

@@ -22,7 +22,7 @@ class ClientConnection {
       if (this.printerSetup.handleMessage(message)) {
         return;
       }
-      this.remoteConsole.sendLine(`Unknown command '${message}'`);
+      this.remoteConsole.sendLine(`Unknown command '${JSON.stringify(message)}'`);
     });
   }
 

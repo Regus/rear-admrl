@@ -144,7 +144,8 @@ class PrinterSetup {
 
   async installPrinter(message) {
     try {
-      const name = message.name;
+      console.log(message.data);
+      const name = message.data.name;
       const port = message.data.port;
       const kconfig = message.data.kconfig;
       const klipperConfig = message.data.klipperConfig;

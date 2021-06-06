@@ -200,6 +200,7 @@ class PrinterSetup {
 
       this.remoteConsole.sendCommandComplete(message.command);
     } catch (ex) {
+      console.log(ex);
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);
       this.remoteConsole.sendCommandFailed(message.command);

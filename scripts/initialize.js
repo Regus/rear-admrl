@@ -35,11 +35,10 @@ if (!fs.existsSync('/home/pi/fleet-data')) {
 if (!fs.existsSync('/home/pi/fleet-data/install-app')) {
   shell.exec('mkdir fleet-data/install-app');
 }
-if (!fs.existsSync('/home/pi/fleet-data')) {
-  shell.exec('mkdir /home/pi/fleet-data');
-}
 shell.exec('cp -r /home/pi/rear-admrl/install-app/* /home/pi/fleet-data/install-app');
 shell.exec('cp /home/pi/rear-admrl/default-conf.json /home/pi/fleet-data/rear-admrl.json');
+shell.exec('cp /home/pi/rear-admrl/assets/basic-klipper.cfg /home/pi/fleet-data/basic-klipper.cfg');
+shell.exec('cp /home/pi/rear-admrl/assets/basic-moonraker.conf /home/pi/fleet-data/basic-moonraker.conf');
 
 shell.exec('sudo mv /home/pi/rear-admrl.service /etc/systemd/system/rear-admrl.service');
 shell.exec('sudo systemctl enable rear-admrl.service');

@@ -23,6 +23,10 @@ class PrinterSetup {
       this.getKConfig(message.command);
       return true;
     }
+    if (message.command === 'printer-setup.get-basic-config') {
+      this.getBasicConfig(message.command);
+      return true;
+    }
     if (message.command === 'printer-setup.install-printer') {
       this.installPrinter(message);
       return true;
@@ -72,6 +76,24 @@ class PrinterSetup {
     }
   }
 
+  async getBasicConfig(command) {
+    try {
+      let klipper = fs.readFileSync('/home/pi/fleet-data/basic-klipper.cfg').toString();
+      let moonraker = fs.readFileSync('/home/pi/fleet-data/basic-moonraker.conf').toString();
+      this.connection.send(JSON.stringify({
+        type: 'basic-config',
+        data: {
+          klipper,
+          moonraker
+        }
+      }));
+    } catch (ex) {
+      this.remoteConsole.sendLine('Installation Failed!');
+      this.remoteConsole.sendLine('' + ex);
+      this.remoteConsole.sendCommandFailed(command);
+    }
+  }
+
   async getKConfig(command) {
     try {
       const kconfigs = [];
@@ -96,7 +118,7 @@ class PrinterSetup {
           kconfig,
           config
         }
-      }))
+      }));
     } catch (ex) {
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);

@@ -80,7 +80,10 @@ class Database {
   }
 
   getPrinterPath(printerid, fileName) {
-    return Path.join(this.printersPath, printerid, fileName);
+    if (fileName) {
+      return Path.join(this.printersPath, printerid, fileName);
+    }
+    return Path.join(this.printersPath, printerid);
   }
 
   readFromPrinter(printerid, fileName) {

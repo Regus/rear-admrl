@@ -1,5 +1,6 @@
 const fsp = require('fs').promises;
 const Path = require('path');
+var shell = require('shelljs');
 
 
 class KlipperManager {

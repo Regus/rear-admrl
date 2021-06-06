@@ -9,7 +9,7 @@ class Database {
     this.fleetPath = fleetPath;
     this.metaPath = Path.join(this.fleetPath, 'meta-data.json');
     this.printers = [];
-    this.printersPath = Path.join(this.fleetPath, 'printersPath');
+    this.printersPath = Path.join(this.fleetPath, 'printers');
 
     if (!fs.existsSync(this.printersPath)) {
       fs.mkdirSync(this.printersPath);

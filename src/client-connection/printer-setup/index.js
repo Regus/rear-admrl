@@ -195,7 +195,7 @@ class PrinterSetup {
       await moonrakerConf.save();
 
       await this.klipper.installService(printer.id);
-      await this.klipper.buildAndWriteFirmware(printer.id);
+      await this.klipper.buildAndWriteFirmware(printer.id, port);
       await this.moonraker.installService(printer.id);
 
       this.remoteConsole.sendCommandComplete(message.command);

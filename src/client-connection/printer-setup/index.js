@@ -16,15 +16,15 @@ class PrinterSetup {
 
   handleMessage(message) {
     if (message.command === 'printer-setup.list-ports') {
-      this.listPrinterPorts(message.command);
+      this.listPrinterPorts(message);
       return true;
     }
     if (message.command === 'printer-setup.get-kconfig') {
-      this.getKConfig(message.command);
+      this.getKConfig(message);
       return true;
     }
     if (message.command === 'printer-setup.get-basic-config') {
-      this.getBasicConfig(message.command);
+      this.getBasicConfig(message);
       return true;
     }
     if (message.command === 'printer-setup.install-printer') {
@@ -49,7 +49,7 @@ class PrinterSetup {
     });
   }
 
-  async listPrinterPorts(command) {
+  async listPrinterPorts(message) {
     try {
       shell.exec('ls /dev/serial/by-id/*', {async: true, silent: true}, (code, stdout, stderr) => {
         this.remoteConsole.sendLine('update ports');
@@ -59,42 +59,53 @@ class PrinterSetup {
         if (code !== 0)   {
           this.connection.send(JSON.stringify({
             type: 'printer-ports',
+            ref: message.ref,
             data: []
-          }))
+          }));
         }
         else {
           this.connection.send(JSON.stringify({
             type: 'printer-ports',
+            ref: message.ref,
             data: stdout.trim().split(/\s+/)
-          }))
+          }));
         }
       });
     } catch (ex) {
+      this.connection.send(JSON.stringify({
+        type: 'error',
+        ref: message.ref
+      }));
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);
-      this.remoteConsole.sendCommandFailed(command);
+      this.remoteConsole.sendCommandFailed(message.command);
     }
   }
 
-  async getBasicConfig(command) {
+  async getBasicConfig(message) {
     try {
       let klipper = fs.readFileSync('/home/pi/fleet-data/basic-klipper.cfg').toString();
       let moonraker = fs.readFileSync('/home/pi/fleet-data/basic-moonraker.conf').toString();
       this.connection.send(JSON.stringify({
         type: 'basic-config',
+        ref: message.ref,
         data: {
           klipper,
           moonraker
         }
       }));
     } catch (ex) {
+      this.connection.send(JSON.stringify({
+        type: 'error',
+        ref: message.ref
+      }));
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);
-      this.remoteConsole.sendCommandFailed(command);
+      this.remoteConsole.sendCommandFailed(message.command);
     }
   }
 
-  async getKConfig(command) {
+  async getKConfig(message) {
     try {
       const kconfigs = [];
       let kconfig = fs.readFileSync('/home/pi/klipper/src/Kconfig').toString();
@@ -114,15 +125,20 @@ class PrinterSetup {
 
       this.connection.send(JSON.stringify({
         type: 'kconfig',
+        ref: message.ref,
         data: {
           kconfig,
           config
         }
       }));
     } catch (ex) {
+      this.connection.send(JSON.stringify({
+        type: 'error',
+        ref: message.ref
+      }));
       this.remoteConsole.sendLine('Installation Failed!');
       this.remoteConsole.sendLine('' + ex);
-      this.remoteConsole.sendCommandFailed(command);
+      this.remoteConsole.sendCommandFailed(message.command);
     }
   }
 

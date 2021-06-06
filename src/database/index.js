@@ -80,18 +80,18 @@ class Database {
   }
 
   getPrinterPath(printerid, fileName) {
-    return Path.join(this.fleetPath, printerid, fileName);
+    return Path.join(this.printersPath, printerid, fileName);
   }
 
   readFromPrinter(printerid, fileName) {
-    const filePath = Path.join(this.fleetPath, printerid, fileName);
+    const filePath = Path.join(this.printersPath, printerid, fileName);
     if (fs.existsSync(filePath)) {
       return fs.readFileSync(filePath).toString();
     }
   }
 
   writeToPrinter(printerid, fileName, content) {
-    const filePath = Path.join(this.fleetPath, printerid, fileName);
+    const filePath = Path.join(this.printersPath, printerid, fileName);
     fs.writeFileSync(filePath, content);
   }
 

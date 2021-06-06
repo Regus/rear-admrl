@@ -148,7 +148,7 @@ class PrinterSetup {
       const port = message.data.port;
       const kconfig = message.data.kconfig;
       const klipperConfig = message.data.klipper;
-      const monnrakerConfig = message.data.monnraker;
+      const monnrakerConfig = message.data.moonraker;
       if (this.database.getPrinterByPort(port)) {
         this.remoteConsole.sendLine(`Cannot install printer - port ${port} already in use!`);
         this.remoteConsole.sendCommandFailed(message.command);

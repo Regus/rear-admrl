@@ -16,7 +16,8 @@ class Database {
     }
 
     fs.readdirSync(this.printersPath)
-    .filter(file => fs.statSync(Path.join(this.printersPath, file)).isDirectory())
+    .map(file => Path.join(this.printersPath, file))
+    .filter(file => fs.statSync(file).isDirectory())
     .forEach(dir => {
       try {
         const printerMetaData = Path.join(dir, 'meta-data.json');

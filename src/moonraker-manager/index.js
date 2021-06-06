@@ -41,7 +41,7 @@ class MoonrakerManager {
     RestartSec=10
 `;
     this.database.writeToPrinter(printerid, 'moonraker.service', service);
-    await this.executeCmd(`sudp cp ${this.database.getPrinterPath(printerid, 'moonraker.service')} /etc/systemd/system/moonraker_${printerid}.service`);
+    await this.executeCmd(`sudo cp ${this.database.getPrinterPath(printerid, 'moonraker.service')} /etc/systemd/system/moonraker_${printerid}.service`);
     await this.executeCmd(`sudo systemctl enable moonraker_${printerid}.service`);
   }
 

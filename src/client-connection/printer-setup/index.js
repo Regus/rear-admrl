@@ -144,12 +144,11 @@ class PrinterSetup {
 
   async installPrinter(message) {
     try {
-      console.log(message.data);
       const name = message.data.name;
       const port = message.data.port;
       const kconfig = message.data.kconfig;
-      const klipperConfig = message.data.klipperConfig;
-      const monnrakerConfig = message.data.monnrakerConfig;
+      const klipperConfig = message.data.klipper;
+      const monnrakerConfig = message.data.monnraker;
       if (this.database.getPrinterByPort(port)) {
         this.remoteConsole.sendLine(`Cannot install printer - port ${port} already in use!`);
         this.remoteConsole.sendCommandFailed(message.command);

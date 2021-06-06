@@ -44,7 +44,7 @@ class KlipperManager {
   async installService(printerid) {
     const klipperPath = Path.join(this.home, 'klipper/scripts');
     const klipperStartPath = Path.join(klipperPath, 'klipper-start.sh');
-    const klipperStart = (await fsp.readFile(klipperStartPath).replace(/(klipper)/ig, `$1_${printerid}`)).toString();
+    const klipperStart = (await fsp.readFile(klipperStartPath)).toString().replace(/(klipper)/ig, `$1_${printerid}`);
     this.database.writeToPrinter(printerid, 'klipper-start.sh', klipperStart);
 
     await this.executeCmd(`sudp cp ${this.database.getPrinterPath(printerid, 'klipper-start.sh')} /etc/init.d/klipper_${printerid}`);

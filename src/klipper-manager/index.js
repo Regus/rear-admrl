@@ -50,6 +50,7 @@ class KlipperManager {
     this.database.writeToPrinter(printerid, 'klipper-start.sh', klipperStart);
 
     await this.executeCmd(`sudo cp ${this.database.getPrinterPath(printerid, 'klipper-start.sh')} /etc/init.d/klipper_${printerid}`);
+    await this.executeCmd(`sudo chmod 755 /etc/init.d/klipper_${printerid}`);
     await this.executeCmd(`sudo update-rc.d klipper_${printerid} defaults`);
 
     const klipperDefaults = `# Configuration for /etc/init.d/klipper_${printerid}
@@ -64,7 +65,6 @@ KLIPPY_ARGS="/home/pi/klipper/klippy/klippy.py ${this.database.getPrinterPath(pr
     this.database.writeToPrinter(printerid, 'klipper-defaults', klipperDefaults);
 
     await this.executeCmd(`sudo cp ${this.database.getPrinterPath(printerid, 'klipper-defaults')} ${`/etc/default/klipper_${printerid}`}`);
-    await this.restart(printerid);
   }
 
   async buildAndWriteFirmware(printerid, port) {

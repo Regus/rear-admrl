@@ -23,6 +23,22 @@ class MoonrakerManager {
     });
   }
 
+  isServiceInstalled(printerid) {
+    fs.existsSync(`/etc/systemd/system/moonraker_${printerid}.service`);
+  }
+
+  async start(printerid) {
+    await this.executeCmd(`sudo systemctl start moonraker_${printerid}.service`);
+  }
+
+  async stop(printerid) {
+    await this.executeCmd(`sudo systemctl stop moonraker_${printerid}.service`);
+  }
+
+  async restart(printerid) {
+    await this.executeCmd(`sudo systemctl restart moonraker_${printerid}.service`);
+  }
+
   async installService(printerid) {
     const service = `#Systemd service file for moonraker
     [Unit]

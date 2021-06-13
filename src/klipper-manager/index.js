@@ -19,7 +19,12 @@ class KlipperManager {
         resolve(code);
       });
       proc.stdout.on('data', (data) => {
-        this.remoteConsole.send(data);
+        data.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .forEach(line => {
+          this.remoteConsole.sendLine(line);
+        });
       });
       let currentLine = undefined;
       proc.stderr.on('data', (data) => {

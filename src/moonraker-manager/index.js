@@ -51,7 +51,7 @@ class MoonrakerManager {
 
     [Service]
     Type=simple
-    User=$USER
+    User=pi
     RemainAfterExit=yes
     ExecStart=/home/pi/moonraker-env/bin/python /home/pi/moonraker/moonraker/moonraker.py -c ${this.database.getPrinterPath(printerid, 'moonraker.conf')}
     Restart=always

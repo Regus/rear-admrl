@@ -25,7 +25,9 @@ class KlipperManager {
       proc.stderr.on('data', (data) => {
         data.split('\n')
         .map(line => line.trim())
+        .filter(line => line.length > 0)
         .forEach(line => {
+          console.log(line);
           if (currentLine) {
             currentLine += line;
             this.remoteConsole.updateLine(currentLine);

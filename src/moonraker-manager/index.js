@@ -1,4 +1,5 @@
 var shell = require('shelljs');
+const fs = require('fs');
 
 class MoonrakerManager {
 

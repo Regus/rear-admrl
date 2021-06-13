@@ -26,7 +26,7 @@ class KlipperManager {
         if (currentLine) {
           currentLine += data.trim();
           this.remoteConsole.updateLine(currentLine);
-          if (data.trim().startsWith('|')) {
+          if (data.includes(' | 100%')) {
             currentLine = undefined;
           }
         }

@@ -27,7 +27,7 @@ class KlipperManager {
           currentLine += data.trim();
           this.remoteConsole.updateLine(currentLine);
           if (data.trim().startsWith('|')) {
-            inDynamicLine = undefined;
+            currentLine = undefined;
           }
         }
         else {

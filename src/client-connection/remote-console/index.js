@@ -34,6 +34,13 @@ class RemoteConsole {
     }));
   }
 
+  updateLine(text) {
+    this.connection.send(JSON.stringify({
+      type: 'console.update-last-line',
+      data: text + '\n'
+    }));
+  }
+
 }
 
 module.exports = RemoteConsole;

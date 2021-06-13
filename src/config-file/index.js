@@ -92,7 +92,7 @@ class ConfigFile {
         if (name === 'serial') {
           console.log(i, this.tokens);
         }
-        while (this.tokens[i + 1][0] === '#' || whitespace.test(this.tokens[i + 1][0]) && this.tokens[i + 1] !== '\n') {
+        while (this.tokens[i + 1] && (this.tokens[i + 1][0] === '#' || whitespace.test(this.tokens[i + 1][0]) && this.tokens[i + 1] !== '\n')) {
           this.tokens.splice(i + 1, 1);
         }
         if (Array.isArray(value)) {

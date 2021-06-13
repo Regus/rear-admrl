@@ -19,19 +19,19 @@ class KlipperManager {
         resolve(code);
       });
       proc.stdout.on('data', (data) => {
-        if (data === 'Reading |') {
+        if (data.startsWith('Reading |')) {
           console.log('reading stdout');
         }
-        if (data === 'Writing |') {
+        if (data.startsWith('Writing |')) {
           console.log('writing stdout');
         }
         this.remoteConsole.send(data);
       });
       proc.stderr.on('data', (data) => {
-        if (data === 'Reading |') {
+        if (data.startsWith('Reading |')) {
           console.log('reading stderr');
         }
-        if (data === 'Writing |') {
+        if (data.startsWith('Writing |')) {
           console.log('writing stderr');
         }
         this.remoteConsole.send(data);

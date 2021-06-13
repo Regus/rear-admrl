@@ -167,13 +167,14 @@ class PrinterSetup {
       const gcodeDir = this.database.getPrinterPath(printer.id, 'gcode');
       fs.mkdirSync(gcodeDir);
       klipperConf.setValue('virtual_sdcard', 'path', gcodeDir);
+      klipperConf.setValue('mcu', 'serial', port);
       await klipperConf.save();
 
       const hostname = shell.exec('hostname -I').stdout.trim();
 
       const moonrakerConf = new ConfigFile(this.database.getPrinterPath(printer.id, 'moonraker.conf'));
       await moonrakerConf.load();
-      moonrakerConf.setValue('server', 'port', 7125 + +(/\d+/.exec(printer.id)[0]));
+      moonrakerConf.setValue('server', 'port', 7125 + +(/\d+/.exec(printer.id)[0]) - 1);
       moonrakerConf.setValue('server', 'config_path', this.database.getPrinterPath(printer.id));
       moonrakerConf.setValue('server', 'klippy_uds_address', `/tmp/klippy_${printer.id}_uds`);
       moonrakerConf.setValue('server', 'database_path', this.database.getPrinterPath(printer.id, '.moonraker_database'));

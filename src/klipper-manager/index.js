@@ -23,24 +23,26 @@ class KlipperManager {
       });
       let currentLine = undefined;
       proc.stderr.on('data', (data) => {
-        if (currentLine) {
-          currentLine += data.trim();
-          this.remoteConsole.updateLine(currentLine);
-          if (data.includes(' | 100%')) {
-            currentLine = undefined;
+        data.split('\n')
+        .map(line => line.trim())
+        .forEach(line => {
+          if (currentLine) {
+            currentLine += line;
+            this.remoteConsole.updateLine(currentLine);
+            if (line.startsWith('|')) {
+              currentLine = undefined;
+            }
           }
-        }
-        else {
-          if (data.trim() === 'Reading |') {
-            currentLine = 'Reading |';
-            console.log('reading stderr');
+          else {
+            if (line === 'Reading |') {
+              currentLine = 'Reading |';
+            }
+            if (line === 'Writing |') {
+              currentLine = 'Writing |';
+            }
+            this.remoteConsole.sendLine(line);
           }
-          if (data.trim() === 'Writing |') {
-            currentLine = 'Writing |';
-            console.log('writing stderr');
-          }
-          this.remoteConsole.send(data);
-        }
+        });
       });
     });
   }

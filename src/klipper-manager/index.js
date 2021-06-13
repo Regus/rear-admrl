@@ -31,7 +31,7 @@ class KlipperManager {
           if (currentLine) {
             currentLine += line;
             this.remoteConsole.updateLine(currentLine);
-            if (line.startsWith('|')) {
+            if (line.includes('| 100%')) {
               currentLine = undefined;
             }
           }

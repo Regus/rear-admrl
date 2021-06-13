@@ -25,7 +25,7 @@ class MoonrakerManager {
   }
 
   isServiceInstalled(printerid) {
-    fs.existsSync(`/etc/systemd/system/moonraker_${printerid}.service`);
+    return fs.existsSync(`/etc/systemd/system/moonraker_${printerid}.service`);
   }
 
   async start(printerid) {

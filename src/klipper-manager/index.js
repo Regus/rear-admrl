@@ -58,7 +58,7 @@ class KlipperManager {
   }
 
   isServiceInstalled(printerid) {
-    fs.existsSync(`/etc/init.d/klipper_${printerid}`);
+    return fs.existsSync(`/etc/init.d/klipper_${printerid}`);
   }
 
   async start(printerid) {

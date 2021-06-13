@@ -37,7 +37,7 @@ class KlipperManager {
             else {
               let lineToSend = currentLine;
               for (let i = progress; i < 100; i += 2) {
-                lineToSend += ' ';
+                lineToSend += '&nbsp;';
               }
               lineToSend += `| ${progress}%`;
               this.remoteConsole.updateLine(lineToSend);

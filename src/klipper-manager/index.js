@@ -19,6 +19,7 @@ class KlipperManager {
         resolve(code);
       });
       proc.stdout.on('data', (data) => {
+        console.log('stdout:', data);
         if (data.startsWith('Reading |')) {
           console.log('reading stdout');
         }
@@ -28,6 +29,7 @@ class KlipperManager {
         this.remoteConsole.send(data);
       });
       proc.stderr.on('data', (data) => {
+        console.log('stderr:', data);
         if (data.startsWith('Reading |')) {
           console.log('reading stderr');
         }

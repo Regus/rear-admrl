@@ -20,7 +20,7 @@ class ConfigFile {
 
   async save() {
     const content = detokenize(this.tokens);
-    await fsp.writeFile(this.filePath.replace('.conf', '_test.conf'), content);
+    await fsp.writeFile(this.filePath, content);
   }
 
   findSegmentIndex(name) {

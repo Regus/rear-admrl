@@ -173,6 +173,7 @@ class PrinterSetup {
 
       const moonrakerConf = new ConfigFile(this.database.getPrinterPath(printer.id, 'moonraker.conf'));
       await moonrakerConf.load();
+      moonrakerConf.setValue('server', 'port', 7125 + /d+/.exec(printer.id)[0]);
       moonrakerConf.setValue('server', 'config_path', this.database.getPrinterPath(printer.id));
       moonrakerConf.setValue('server', 'klippy_uds_address', `/tmp/klippy_${printer.id}_uds`);
       moonrakerConf.setValue('server', 'database_path', this.database.getPrinterPath(printer.id, '.moonraker_database'));
@@ -185,7 +186,12 @@ class PrinterSetup {
         }
         else {
           if (trustedClients !== hostname) {
-            moonrakerConf.setValue('authorization', 'trusted_clients', [trustedClients, hostname]);
+            if (trustedClients === 'auto') {
+              moonrakerConf.setValue('authorization', 'trusted_clients', hostname);
+            }
+            else {
+              moonrakerConf.setValue('authorization', 'trusted_clients', [trustedClients, hostname]);
+            }
           }
         }
       }

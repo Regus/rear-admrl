@@ -89,6 +89,9 @@ class ConfigFile {
         segmentFound = true;
       }
       else if (token === `${name}:`) {
+        if (name === 'serial') {
+          console.log(i, this.tokens);
+        }
         while (this.tokens[i + 1][0] === '#' || whitespace.test(this.tokens[i + 1][0]) && this.tokens[i + 1] !== '\n') {
           this.tokens.splice(i + 1, 1);
         }

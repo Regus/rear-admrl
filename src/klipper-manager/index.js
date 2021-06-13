@@ -27,12 +27,20 @@ class KlipperManager {
         .map(line => line.trim())
         .filter(line => line.length > 0)
         .forEach(line => {
-          console.log(line);
           if (currentLine) {
             currentLine += line;
-            this.remoteConsole.updateLine(currentLine);
+            const progress = [...currentLine].filter(c => c === '#').length * 2;
             if (line.includes('| 100%')) {
+              this.remoteConsole.updateLine(currentLine.replace('# |', '#|'));
               currentLine = undefined;
+            }
+            else {
+              let lineToSend = currentLine;
+              for (let i = progress; i < 100; i += 2) {
+                lineToSend += ' ';
+              }
+              lineToSend += `| ${progress}%`;
+              this.remoteConsole.updateLine(lineToSend);
             }
           }
           else {

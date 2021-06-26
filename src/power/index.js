@@ -10,12 +10,12 @@ class Power {
   }
 
   handleMessage(message, remoteConsole) {
-    if (message === 'power.turn-on-all') {
-      this.turnOnAllPrinters(message, remoteConsole);
+    if (message.command === 'power.turn-on-all') {
+      this.turnOnAllPrinters(message.command, remoteConsole);
       return true;
     }
-    else if (message === 'power.turn-off-all') {
-      this.turnOffAllPrinters(message, remoteConsole);
+    else if (message.command === 'power.turn-off-all') {
+      this.turnOffAllPrinters(message.command, remoteConsole);
       return true;
     }
     return false;

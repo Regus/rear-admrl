@@ -85,7 +85,7 @@ class KlipperManager {
 
     const klipperDefaults = `# Configuration for /etc/init.d/klipper_${printerid}
 
-KLIPPY_USER=$USER
+KLIPPY_USER=pi
 
 KLIPPY_EXEC=/home/pi/klippy-env/bin/python
 

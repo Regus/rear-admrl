@@ -23,6 +23,7 @@ class Power {
 
   turnOnAllPrinters(command, remoteConsole) {
     try {
+      console.log('turn on all');
       this.printer1.writeSync(1);
       this.printer2.writeSync(1);
       this.printer3.writeSync(1);
@@ -37,6 +38,7 @@ class Power {
 
   turnOffAllPrinters(command, remoteConsole) {
     try {
+      console.log('turn off all');
       this.printer1.writeSync(0);
       this.printer2.writeSync(0);
       this.printer3.writeSync(0);

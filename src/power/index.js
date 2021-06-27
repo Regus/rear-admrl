@@ -1,8 +1,8 @@
 const Gpio = require('onoff').Gpio;
 
 class Power {
-  printer1 = new Gpio(20, 'out');
-  printer2 = new Gpio(16, 'out');
+  printer1 = new Gpio(16, 'out');
+  printer2 = new Gpio(20, 'out');
   printer3 = new Gpio(26, 'out');
   printer4 = new Gpio(21, 'out');
 

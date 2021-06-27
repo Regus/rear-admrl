@@ -19,11 +19,11 @@ class Power {
       return true;
     }
     else if (message.command === 'power.turn-on') {
-      this.turnOffAllPrinters(message, remoteConsole);
+      this.turnOnPrinter(message, remoteConsole);
       return true;
     }
     else if (message.command === 'power.turn-off') {
-      this.turnOffAllPrinters(message, remoteConsole);
+      this.turnOffPrinter(message, remoteConsole);
       return true;
     }
     return false;

@@ -18,12 +18,20 @@ class Power {
       this.turnOffAllPrinters(message.command, remoteConsole);
       return true;
     }
+    else if (message.command === 'power.turn-on') {
+      this.turnOffAllPrinters(message, remoteConsole);
+      return true;
+    }
+    else if (message.command === 'power.turn-off') {
+      this.turnOffAllPrinters(message, remoteConsole);
+      return true;
+    }
     return false;
   }
 
   turnOnAllPrinters(command, remoteConsole) {
     try {
-      console.log('turn on all');
+      remoteConsole.sendLine('Turn on all printers');
       this.printer1.writeSync(1);
       this.printer2.writeSync(1);
       this.printer3.writeSync(1);
@@ -38,7 +46,7 @@ class Power {
 
   turnOffAllPrinters(command, remoteConsole) {
     try {
-      console.log('turn off all');
+      remoteConsole.sendLine('Turn off all printers');
       this.printer1.writeSync(0);
       this.printer2.writeSync(0);
       this.printer3.writeSync(0);
@@ -48,6 +56,56 @@ class Power {
       remoteConsole.sendLine('Installation Failed!');
       remoteConsole.sendLine('' + ex);
       remoteConsole.sendCommandFailed(command);
+    }
+  }
+
+  turnOnPrinter(message, remoteConsole) {
+    try {
+      remoteConsole.sendLine('Turn on printer ' + message.data.pinIndex);
+      switch (message.data.pinIndex) {
+        case 1:
+          this.printer1.writeSync(1);
+        break;
+        case 2:
+          this.printer2.writeSync(1);
+        break;
+        case 3:
+          this.printer3.writeSync(1);
+        break;
+        case 4:
+          this.printer4.writeSync(1);
+        break;
+      }
+      remoteConsole.sendCommandComplete(message.command);
+    } catch (ex) {
+      remoteConsole.sendLine('Operation Failed!');
+      remoteConsole.sendLine('' + ex);
+      remoteConsole.sendCommandFailed(message.command);
+    }
+  }
+
+  turnOffPrinter(message, remoteConsole) {
+    try {
+      remoteConsole.sendLine('Turn off printer ' + message.data.pinIndex);
+      switch (message.data.pinIndex) {
+        case 1:
+          this.printer1.writeSync(0);
+        break;
+        case 2:
+          this.printer2.writeSync(0);
+        break;
+        case 3:
+          this.printer3.writeSync(0);
+        break;
+        case 4:
+          this.printer4.writeSync(0);
+        break;
+      }
+      remoteConsole.sendCommandComplete(message.command);
+    } catch (ex) {
+      remoteConsole.sendLine('Operation Failed!');
+      remoteConsole.sendLine('' + ex);
+      remoteConsole.sendCommandFailed(message.command);
     }
   }
 }
